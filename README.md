@@ -1,2 +1,6 @@
-# afu-hymn-clock
-Small reliable script for automatically launching hymn inside web browser
+# Годинник з хвилиною мовчання і гімном України
+
+## Як встановити
+1. Завантажити на свій комп'ютер 2 файла в одну і ту саму папку
+2. Відкрити файл afu-hymn-clock.html
+3. Увімкнути звук на комп'ютері і обрати необхідну гучність
