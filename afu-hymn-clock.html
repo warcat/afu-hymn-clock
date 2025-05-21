@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Гімн України</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,800&display=swap" rel="stylesheet">
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/4/49/Coat_of_Arms_of_Ukraine.svg">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #d4d4c4;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      overflow: hidden;
+      /* text-shadow: 2px 2px 8px rgba(0,0,0,0.5); */
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+      width: 70vw;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .coat-of-arms {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: min(30vw, 300px);
+    }
+
+    .day {
+      font-size: 4vw;
+      color: #12100B; /* м’який жовтуватий колір */
+    }
+
+    .date {
+      font-size: 2vw;
+      color: #777758; /* той самий колір, щоб гармоніювало */
+    }
+
+    .time {
+      font-size: 20vw;
+      margin-top: 0.2em;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .time span {
+      color: #ddd; /* сірий для секунд */
+      width: 20px;
+    }
+
+    video {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    video.active {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/94/%D0%9B%D0%BE%D0%B3%D0%BE_%D0%A1%D0%B8%D0%BB_%D0%A2%D1%80%D0%9E_%D0%97%D0%A1%D0%A3_-_%D0%93%D0%BE%D1%82%D0%BE%D0%B2%D1%96_%D0%B4%D0%BE_%D1%81%D0%BF%D1%80%D0%BE%D1%82%D0%B8%D0%B2%D1%83.png" alt="ТРО" class="coat-of-arms">
+
+<div class="container" id="timer">
+  <div class="day" id="theDay"></div>
+  <div class="date" id="theDate"></div>
+  <div class="time" id="theTime"></div>
+</div>
+
+<video id="hymn">
+  <source src="minute.mp4" type="video/mp4">
+  Ваш браузер не підтримує відео.
+</video>
+
+<script>
+  const myVideo = document.getElementById("hymn");
+  const myTimer = document.getElementById("timer");
+  const targetTime = "08:59:59"; // Час запуску гімну
+
+  function showTime() {
+    const date = new Date();
+    const days = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
+    const months = ["Січня", "Лютого", "Березня", "Квітня", "Травня", "Червня", "Липня", "Серпня", "Вересня", "Жовтня", "Листопада", "Грудня"];
+
+    const dt = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+    const tm = `${hh}:${mm}:${ss}`;
+
+    document.getElementById("theDay").textContent = days[date.getDay()];
+    document.getElementById("theDate").textContent = dt;
+    document.getElementById("theTime").innerHTML = `${hh}:${mm}:<span>${ss}</span>`;
+    document.title = "Гімн: " + tm;
+
+    const currentDt = new Date(`0000-01-01 ${tm}:000Z`);
+    const targetDt = new Date(`0000-01-01 ${targetTime}:000Z`);
+
+    if (currentDt - targetDt < 180000 && currentDt - targetDt >= 0) playHymn();
+    else showClock();
+  }
+
+  function playHymn() {
+    if (!myVideo.classList.contains("active")) {
+      myTimer.style.display = "none";
+      myVideo.classList.add("active");
+      myVideo.play();
+    }
+  }
+
+  function showClock() {
+    if (myVideo.classList.contains("active")) {
+      myTimer.style.display = "flex";
+      myVideo.classList.remove("active");
+    }
+  }
+
+  myVideo.pause();
+  setInterval(showTime, 1000);
+</script>
+<!-- Copyright Oleh Miroshnychenko 2025 -->
+</body>
+</html>
