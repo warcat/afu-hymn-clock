@@ -13,14 +13,11 @@
       color: white;
       font-family: 'Montserrat', sans-serif;
       overflow: hidden;
-      /* text-shadow: 2px 2px 8px rgba(0,0,0,0.5); */
     }
 
     .container {
       display: flex;
       flex-direction: column;
-      margin: auto;
-      width: 70vw;
       justify-content: center;
       height: 100vh;
       text-align: center;
@@ -44,9 +41,10 @@
     }
 
     .time {
-      font-size: 18vw;
-      margin-top: 0.2em;
+      font-size: 21vw;
       text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+      text-align: left;
+      margin: 0 5vw;
     }
 
     .time span {
@@ -71,7 +69,28 @@
 </head>
 <body>
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/9/94/%D0%9B%D0%BE%D0%B3%D0%BE_%D0%A1%D0%B8%D0%BB_%D0%A2%D1%80%D0%9E_%D0%97%D0%A1%D0%A3_-_%D0%93%D0%BE%D1%82%D0%BE%D0%B2%D1%96_%D0%B4%D0%BE_%D1%81%D0%BF%D1%80%D0%BE%D1%82%D0%B8%D0%B2%D1%83.png" alt="ТРО" class="coat-of-arms">
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/94/%D0%9B%D0%BE%D0%B3%D0%BE_%D0%A1%D0%B8%D0%BB_%D0%A2%D1%80%D0%9E_%D0%97%D0%A1%D0%A3_-_%D0%93%D0%BE%D1%82%D0%BE%D0%B2%D1%96_%D0%B4%D0%BE_%D1%81%D0%BF%D1%80%D0%BE%D1%82%D0%B8%D0%B2%D1%83.png" alt="ЛОГОТИП" class="coat-of-arms">
+
+<div id="settingsToggle" title="Налаштування" style="position: absolute; top: 20px; right: 20px; font-size: 2em; cursor: pointer; z-index: 1000; color: #12100B;">
+  ⌘
+</div>
+
+<div id="settings" style="display: none; position: absolute; top: 60px; right: 20px; background: rgba(255,255,255,0.1); padding: 1em; border-radius: 10px; color: #12100B; border: solid;">
+  <label style="display:block; margin-bottom: 0.5em;">
+    Час гімну:
+    <input type="time" id="alarmTime" value="08:59">
+  </label>
+  <label style="display:block; margin-bottom: 0.5em;">
+    Логотип:
+    <select id="logoSelector" style="margin-left: 12px;">
+      <option value="tro">ТРО ЗСУ</option>
+      <option value="tryzub">Тризуб</option>
+      <option value="afu_emblem">Емблема ЗСУ</option>
+      <option value="none">Без логотипу</option>
+    </select>
+  </label>
+  <button onclick="saveSettings()" style="margin: 0 33%; background-color: #12100B;color: white; margin-left: 94px;">Зберегти</button>
+</div>
 
 <div class="container" id="timer">
   <div class="day" id="theDay"></div>
@@ -88,6 +107,13 @@
   const myVideo = document.getElementById("hymn");
   const myTimer = document.getElementById("timer");
   const targetTime = "08:59:59"; // Час запуску гімну
+  const coat = document.querySelector(".coat-of-arms");
+  const settingsBlock = document.getElementById("settings");
+
+  function getTargetTime() {
+    const saved = localStorage.getItem("targetTime");
+    return saved ? saved + ":00" : "17:44:00";
+  }
 
   function showTime() {
     const date = new Date();
@@ -106,7 +132,7 @@
     document.title = "Гімн: " + tm;
 
     const currentDt = new Date(`0000-01-01 ${tm}:000Z`);
-    const targetDt = new Date(`0000-01-01 ${targetTime}:000Z`);
+    const targetDt = new Date(`0000-01-01 ${getTargetTime()}:000Z`);
 
     if (currentDt - targetDt < 180000 && currentDt - targetDt >= 0) playHymn();
     else showClock();
@@ -127,8 +153,52 @@
     }
   }
 
+  function saveSettings() {
+    const timeValue = document.getElementById("alarmTime").value;
+    const logoValue = document.getElementById("logoSelector").value;
+
+    localStorage.setItem("targetTime", timeValue);
+    localStorage.setItem("logo", logoValue);
+    applyLogo(logoValue);
+  }
+
+  function applyLogo(value) {
+    if (value === "tro") {
+      coat.src = "https://upload.wikimedia.org/wikipedia/commons/9/94/%D0%9B%D0%BE%D0%B3%D0%BE_%D0%A1%D0%B8%D0%BB_%D0%A2%D1%80%D0%9E_%D0%97%D0%A1%D0%A3_-_%D0%93%D0%BE%D1%82%D0%BE%D0%B2%D1%96_%D0%B4%D0%BE_%D1%81%D0%BF%D1%80%D0%BE%D1%82%D0%B8%D0%B2%D1%83.png";
+      coat.style.display = "block";
+      coat.style.width = "min(30vw,300px)";
+    } else if (value === "tryzub") {
+      coat.src = "https://upload.wikimedia.org/wikipedia/commons/c/cf/Coat_of_Arms_of_Ukraine.svg";
+      coat.style.display = "block";
+      coat.style.width = "min(15vw,150px)";
+    } else if (value === "afu_emblem") {
+      coat.src = "https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_the_Ukrainian_Armed_Forces.svg";
+      coat.style.width = "min(15vw,150px)";
+      coat.style.display = "block";
+    } else {
+      coat.style.display = "none";
+    }
+  }
+
+  // Першочергове застосування збережених налаштувань
+  window.onload = () => {
+    const savedTime = localStorage.getItem("targetTime");
+    const savedLogo = localStorage.getItem("logo");
+
+    if (savedTime) document.getElementById("alarmTime").value = savedTime;
+    if (savedLogo) {
+      document.getElementById("logoSelector").value = savedLogo;
+      applyLogo(savedLogo);
+    }
+  };
+
   myVideo.pause();
   setInterval(showTime, 1000);
+
+  document.getElementById("settingsToggle").addEventListener("click", () => {
+    const settings = document.getElementById("settings");
+    settings.style.display = settings.style.display === "none" ? "block" : "none";
+  });
 </script>
 <!-- Copyright Oleh Miroshnychenko 2025 -->
 </body>
