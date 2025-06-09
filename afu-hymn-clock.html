@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Гімн України</title>
+  <title>Хвилина мовчання</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,800&display=swap" rel="stylesheet">
   <link rel="icon" href="ukraine-flag-icon.ico">
   <style>
@@ -41,7 +41,7 @@
     }
 
     .time {
-      font-size: 21vw;
+      font-size: 20vw;
       text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
       text-align: left;
       margin: 0 5vw;
@@ -129,7 +129,6 @@
     document.getElementById("theDay").textContent = days[date.getDay()];
     document.getElementById("theDate").textContent = dt;
     document.getElementById("theTime").innerHTML = `${hh}:${mm}:<span>${ss}</span>`;
-    document.title = "Гімн: " + tm;
 
     const currentDt = new Date(`0000-01-01 ${tm}:000Z`);
     const targetDt = new Date(`0000-01-01 ${getTargetTime()}:000Z`);
